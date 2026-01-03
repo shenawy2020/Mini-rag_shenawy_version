@@ -36,7 +36,7 @@ project_path, rand_file_Key+"_"+cleaende_filename
         )
 
 
-        return final_file_path
+        return final_file_path, rand_file_Key+"_"+cleaende_filename
 
     def get_clean_file_name(self, orig_file_name: str):
 

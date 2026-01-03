@@ -26,7 +26,7 @@ async def upolad_data(project_id: str,file :UploadFile,app_settings : Settings=D
                       
          )
     project_dir_path=ProjectController().get_project_path(project_id=project_id)
-    new_file_name=DataController().generate_file_name(origin_filename=file.filename,projectid=project_id)
+    new_file_name,new_fiel_key=DataController().generate_file_name(origin_filename=file.filename,projectid=project_id)
 
     file_path=os.path.join(
          project_dir_path,new_file_name
@@ -51,6 +51,7 @@ async def upolad_data(project_id: str,file :UploadFile,app_settings : Settings=D
 
     return JSONResponse(
             content={
-                "Result": ResponsFiles.File_upload_sucess.value,                
+                "Result": ResponsFiles.File_upload_sucess.value,
+                "new_file_key":new_fiel_key                
             }
         )
