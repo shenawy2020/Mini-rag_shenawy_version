@@ -6,4 +6,4 @@ class ResponsFiles(Enum):
     File_upload_sucess="File_upload_sucess"    
     File_upload_Field="File_upload_Field"  
     File_Validated_sucess="File_Validated_sucess"    
-
+    PROCESSING_FAILED="PROCESSING_FAILED"
