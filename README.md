@@ -1,4 +1,4 @@
-# mini-rag
+# mini-rag-Shenaawy_verions
 
 This is a minimal implementation of the RAG model for question answering.
 
