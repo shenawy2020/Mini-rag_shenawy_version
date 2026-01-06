@@ -8,7 +8,8 @@ class Settings(BaseSettings):
     FILE_MAX_SIZE:int
     FILE_ALLOWED_TYPES:list
     FILE_DEFAULT_CHUNK_SIZE: int
-
+    MONOGDB_ULR:str
+    MONOGDB_Database:str
 
     
     class config:
