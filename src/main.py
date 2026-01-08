@@ -8,12 +8,14 @@ app = FastAPI()
 @app.on_event("startup")
 async def startup_db_client():
     settting=get_settings()
+   # print (settting.MONOGDB_ULR)
+    #print (settting.MONOGDB_Database)
     app.mogon_conn= AsyncIOMotorClient(settting.MONOGDB_ULR)
-    app.dbclient=app.mogon_conn(settting.MONOGDB_Database)
+    app.dbclient=app.mogon_conn[settting.MONOGDB_Database]
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    app.dbclient.close()
+      app.dbclient.close()
 
 
 

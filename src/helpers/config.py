@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     FILE_DEFAULT_CHUNK_SIZE: int
     MONOGDB_ULR:str
     MONOGDB_Database:str
+    FILE_ALLOWED_EXT:list[str]
 
     
     class config:

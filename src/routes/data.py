@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter,Depends,UploadFile,status
+from fastapi import FastAPI, APIRouter,Depends,UploadFile,status,Request
 from fastapi.responses import JSONResponse
 import os
 from helpers.config import get_settings, Settings
@@ -7,6 +7,7 @@ import aiofiles
 import logging
 from models import ResponsFiles
 from .schemes.data import ProcesseRequest
+from models.ProjectModel import ProjectModel
 
 
 logger=logging.getLogger("uploadfile.uncorn")
@@ -16,8 +17,11 @@ data_router = APIRouter(
     tags=["api_v1","data"],
 )
 @data_router.post("/upload/{project_id}")
-async def upolad_data(project_id: str,file :UploadFile,app_settings : Settings=Depends(get_settings)):
-    
+async def upolad_data(request :Request,project_id: str,file :UploadFile,app_settings : Settings=Depends(get_settings)):
+    #print(request.app.dbclient)
+    projectModel=ProjectModel(dbclient=request.app.dbclient)
+
+    prject= await projectModel.get_project_or_createone(project_id=project_id)
     is_valid,result_Smg=DataController().validate_uploaded_file(file=file)
     
     if not is_valid:
@@ -50,12 +54,14 @@ async def upolad_data(project_id: str,file :UploadFile,app_settings : Settings=D
             }
                       
          )
+    print (prject)
     
-
     return JSONResponse(
             content={
                 "Result": ResponsFiles.File_upload_sucess.value,
-                "new_file_key":new_fiel_key                
+                "new_file_key":new_fiel_key     ,
+               "project_id":str(prject.id)
+                  
             }
         )
 #staring the new end point here
