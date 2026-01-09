@@ -7,8 +7,9 @@ from bson.objectid import ObjectId
 
 
 class Project(BaseModel):
-    _id:Optional[ObjectId]
-    id: ObjectId | None = Field(default='None', alias="_id")
+    #_id:Optional[ObjectId]
+    id: Optional[ObjectId] = Field(default=None, alias="_id")
+    #id: ObjectId | None = Field(default=None, alias="_id")
     project_id:str =Field(..., min_length=1)
     @validator("project_id")
     def validators_project_id(cls,value):
@@ -19,4 +20,7 @@ class Project(BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
-        
+        populate_by_name=True
+        allow_population_by_field_name = True
+        json_encoders = {ObjectId: str}
+      

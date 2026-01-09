@@ -11,9 +11,9 @@ class ProjectModel(BaseDataModesl):
 
 
     async def create_project(self,project:Project):
-        result=await self.Collections.insert_one(project.dict())
+        result=await self.Collections.insert_one(project.dict(by_alias=True, exclude_unset=True))
         project._id=result.inserted_id
-        project.id=str(result.inserted_id)
+       # project.id=str(result.inserted_id)
         return project
     
     
@@ -41,9 +41,9 @@ class ProjectModel(BaseDataModesl):
         cursor = self.Collections.find().skip( (page-1) * page_size ).limit(page_size)
         projects = []
         async for document in cursor:
-            project.append(
+            projects.append(
                 Project(**document)
             )
-        return project,total_pages
+        return projects,total_pages
 
 

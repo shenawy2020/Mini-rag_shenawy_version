@@ -8,6 +8,10 @@ import logging
 from models import ResponsFiles
 from .schemes.data import ProcesseRequest
 from models.ProjectModel import ProjectModel
+from models.ChunkModel import ChunkModel    
+
+from models.db_schema import Data_chunk    
+from bson.objectid import ObjectId
 
 
 logger=logging.getLogger("uploadfile.uncorn")
@@ -60,16 +64,23 @@ async def upolad_data(request :Request,project_id: str,file :UploadFile,app_sett
             content={
                 "Result": ResponsFiles.File_upload_sucess.value,
                 "new_file_key":new_fiel_key     ,
-               "project_id":str(prject.id)
+              # "project_id":str(prject.id)
                   
             }
         )
 #staring the new end point here
 @data_router.post("/process/{project_id}")
-async def process_endpoint(project_id:str,process_request:ProcesseRequest):
+async def process_endpoint(request:Request,project_id:str,process_request:ProcesseRequest):
             file_id = process_request.file_id
             chunk_size = process_request.chunk_size
             overlap_size = process_request.overlap_size
+            do_reset=process_request.do_reset
+            
+            projectModel=ProjectModel(dbclient=request.app.dbclient)
+
+            prject= await projectModel.get_project_or_createone(project_id=project_id)
+             
+
 
             process_controller = ProcessController(project_id=project_id)
 
@@ -90,5 +101,30 @@ async def process_endpoint(project_id:str,process_request:ProcesseRequest):
                 "signal": ResponsFiles.PROCESSING_FAILED.value
             }
         )
+             
 
-            return file_chunks
+
+            file_chunk_records=[
+                 Data_chunk(
+                    chunk_text =chunk.page_content
+                    ,check_metdadata=chunk.metadata
+                    ,chunk_order=index +1
+                    ,chunk_project_id=ObjectId(prject.id)
+                    ) for index,chunk in enumerate(file_chunks)
+
+            ]
+            chunkModel=ChunkModel(dbclient=request.app.dbclient)    
+           # deletecCout=0
+            if (do_reset==1):
+                deletecCout= await chunkModel.delete_project_chunks(project_id=prject.id)
+
+            numberofadded =await chunkModel.create_multiple_chunks_bsize_v3(
+                chunks=file_chunk_records)
+            return JSONResponse(    
+            content={
+                 "signal": ResponsFiles.PROCESSING_SUCESS.value,
+                 "deletecCout":deletecCout if do_reset==1 else 0,
+
+                "number_of_added_chunks":numberofadded
+            }
+            )
