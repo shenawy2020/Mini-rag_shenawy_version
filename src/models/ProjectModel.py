@@ -8,11 +8,33 @@ class ProjectModel(BaseDataModesl):
         super().__init__(dbclient=dbclient)
         self.Collections=self.dbclient[DataBaseEnum.collection_project_name]
        # print("inti Done")
+    @classmethod
+    async def create_instance(cls, dbclient):
+        instance = cls(dbclient)
+        await instance.init_collections()
+        return instance
+
+    async def init_collections(self):
+        all_collctions=await self.dbclient.list_collection_names()
+        if DataBaseEnum.collection_project_name not in all_collctions:
+            self.Collections=self.dbclient[DataBaseEnum.collection_project_name]
+            indexes=Project.get_indexes()
+            for index in indexes :
+                await self.Collections.create_index(
+                    index["key"],
+                    name=index["name"],
+                    unique=index["unique"] 
+                           )
+                
+
+        
+
+
 
 
     async def create_project(self,project:Project):
         result=await self.Collections.insert_one(project.dict(by_alias=True, exclude_unset=True))
-        project._id=result.inserted_id
+        project.id=result.inserted_id
        # project.id=str(result.inserted_id)
         return project
     
