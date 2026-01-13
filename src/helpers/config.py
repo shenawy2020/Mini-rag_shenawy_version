@@ -5,6 +5,7 @@ class Settings(BaseSettings):
     APP_NAME: str
     APP_VERSION:  str
     OPENAI_API_KEY: str
+    Cohere_API_KEY: str
     FILE_MAX_SIZE:int
     FILE_ALLOWED_TYPES:list
     FILE_DEFAULT_CHUNK_SIZE: int
@@ -15,6 +16,7 @@ class Settings(BaseSettings):
     
     class config:
        env_file = ".env"
+       SettingsConfigDict
     
     model_config = {
         "env_file": ".env",
