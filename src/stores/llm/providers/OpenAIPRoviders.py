@@ -9,6 +9,7 @@ class OpenAIPRoviders(LLMInterfacy):
                  default_input_max_characters:int=1000
                  ,default_output_max_tokens:int=1000
                  ,default_temperature:float=0.1):
+        
         self.api_key=api_key
         self.api_url=api_url
         self.default_input_max_characters=default_input_max_characters
@@ -17,9 +18,10 @@ class OpenAIPRoviders(LLMInterfacy):
         self.set_generatuion_model_id=None
         self.embedding_model_id=None
         self.embedding_size=None
+        
         self.client=OpenAI(
             api_key=self.api_key,
-            api_base=self.api_url
+            base_url=self.api_url
         )
         self.logger=logging.getLogger(__name__)
     def set_generatuion_model(self,mode_id:str):
@@ -76,7 +78,7 @@ class OpenAIPRoviders(LLMInterfacy):
     
     
     
-        def constuct_prompt(self,prompt:str,role:str="user"):
+    def constuct_prompt(self,prompt:str,role:str="user"):
             return {
                 "role":role,
                 "content":self.process_text(prompt)

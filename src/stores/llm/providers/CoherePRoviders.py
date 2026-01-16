@@ -79,5 +79,5 @@ class CoherePRoviders(LLMInterfacy):
             self.logger.error("No embeddings returned from Cohere.")
             return None
         return response.embeddings.float[0];
-
-    
+    def emded_text(self,text:str,doccument_type:str=None):
+        pass
