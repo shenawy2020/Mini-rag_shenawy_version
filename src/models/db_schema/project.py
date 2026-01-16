@@ -21,7 +21,7 @@ class Project(BaseModel):
     class Config:
         arbitrary_types_allowed = True
         populate_by_name=True
-        allow_population_by_field_name = True
+        validate_by_name =True
         json_encoders = {ObjectId: str}
       
     @classmethod
